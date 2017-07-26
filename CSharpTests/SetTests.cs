@@ -48,6 +48,27 @@ namespace CSharpTests
             Assert.IsFalse(set.Contains(item2));
         }
 
+        [TestMethod]
+        public void TwoDifferentButIdenticalItemsAreTreatedAsSame()
+        {
+
+            ValueClass item1 = new ValueClass()
+            {
+                Value = 15
+            };
+
+            ValueClass item2 = new ValueClass()
+            {
+                Value = 15
+            };
+
+            ISet<ValueClass> set = new HashSet<ValueClass>()
+            {
+                item1
+            };
+
+            Assert.IsTrue(set.Contains(item2));
+        }
 
 
 

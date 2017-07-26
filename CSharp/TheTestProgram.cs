@@ -17,7 +17,18 @@ namespace TestProject
             //c.partialClassMethod();
             //c = null;
             //"Test".Show();
+            
+            Console.ReadKey();
+        }
 
+        private static async Task Write(TextWriter writer, string message)
+        {
+            await writer.WriteAsync(message);
+        }
+
+        public void LearningAsync()
+        {
+            // Failed Async learning Experience
             //List<TextWriter> writers = new List<TextWriter>()
             //{
             //    Console.Out,
@@ -52,72 +63,6 @@ namespace TestProject
             //    Write(writers[i], messages[i]);
             //    Console.WriteLine("Test");
             //}
-
-
-            Tester item = new Tester()
-            {
-                Value = 5
-            };
-
-            ISet<Tester> set = new HashSet<Tester>
-            {
-                item
-            };
-
-            if (set.Contains(item)) Console.WriteLine("Contained 1"); // True
-
-            item.Value = 10;
-
-            if (set.Contains(item)) Console.WriteLine("Contained 2"); // False
-
-            Tester item2 = new Tester()
-            {
-                Value = 5
-            };
-
-            if (set.Contains(item2)) Console.WriteLine("Contained 3"); // False
-
-
-            // What happens:
-            // item 1 is inserted with hashcode 1 
-            // item 1 can be found in set because item 1 has hashcode 1, and item 1 is equal to item 1
-            // item 1 is changed
-            // item 1 cannot be found in set because item 1 has hashcode 2 now
-            // Item 2 is created so it has hashcode 1
-            // Item 1 cannot be found in set because even though it was inserted with hashcode 1, it is not equal to the changed item 1
-
-            // Conclusion: 
-            // Item 1 can no longer be found in the set, 
-            //      UNLESS in the unlikely case that it was changed to have a value which coincidenly also had hashcode 1
-
-            Console.ReadKey();
-        }
-
-        private static async Task Write(TextWriter writer, string message)
-        {
-            await writer.WriteAsync(message);
-        }
-        
-        private class Tester
-        {
-            public int Value { get; set; }
-            
-            public override bool Equals(object obj)
-            {
-                if (obj == null || GetType() != obj.GetType())
-                {
-                    return false;
-                }
-
-                Tester other = (Tester)obj;
-                
-                return Value == other.Value;
-            }
-            
-            public override int GetHashCode()
-            {
-                return Value.GetHashCode();
-            }
         }
 
     }
