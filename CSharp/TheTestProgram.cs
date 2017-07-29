@@ -17,7 +17,9 @@ namespace TestProject
             //c.partialClassMethod();
             //c = null;
             //"Test".Show();
-            
+
+
+
             Console.ReadKey();
         }
 
@@ -64,6 +66,9 @@ namespace TestProject
             //    Console.WriteLine("Test");
             //}
         }
+
+
+
 
     }
 }
