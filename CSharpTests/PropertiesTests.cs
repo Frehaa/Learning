@@ -1,13 +1,13 @@
-﻿using NUnit.Framework;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestProject;
 
 namespace UnitTestProject
 {
-
-    [TestFixture]
+    [TestClass]
     public class PropertiesTest
     {
-        [Test]
+        [TestMethod]
         public void PropertyDefaultIsTrue()
         {
             Properties prop = new Properties();
@@ -15,7 +15,7 @@ namespace UnitTestProject
             Assert.AreEqual(true, prop.Test);
         }
 
-        [Test]
+        [TestMethod]
         public void PropertyValueChangeWhenSetFalse()
         {
             Properties prop = new Properties();
@@ -23,5 +23,6 @@ namespace UnitTestProject
 
             Assert.AreEqual(false, prop.Test);
         }
+
     }
 }
