@@ -1,11 +1,11 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CSharpTests
+namespace CSharpTestMethods
 {
-    [TestFixture]
+    [TestClass]
     public class BinaryStuff
     {
-        [Test]
+        [TestMethod]
         public void Number1InBinaryAndHex()
         {
             int binary1 = 0b1;
@@ -15,7 +15,7 @@ namespace CSharpTests
             Assert.AreEqual(1, hex1);
         }
 
-        [Test]
+        [TestMethod]
         public void First4BitsEqual15()
         {
             int first4hex = 0xF;
@@ -25,7 +25,7 @@ namespace CSharpTests
             Assert.AreEqual(15, first4hex);
         }
 
-        [Test]
+        [TestMethod]
         public void First5BitsEqual31()
         {
             int first5binary = 0b11111;
@@ -35,7 +35,7 @@ namespace CSharpTests
             Assert.AreEqual(31, first5hex);
         }
 
-        [Test]
+        [TestMethod]
         public void First8BitsEqual255()
         {
             int first8hex = 0xFF;
@@ -45,7 +45,7 @@ namespace CSharpTests
             Assert.AreEqual(31, first8binary);
         }
 
-        [Test]
+        [TestMethod]
         public void First16BitsEqual65535()
         {
             int first16hex = 0xFFFF;
@@ -55,18 +55,18 @@ namespace CSharpTests
             Assert.AreEqual(65535, first16binary);
         }
 
-        [Test]
+        [TestMethod]
         public void First31BitsEqualMaxValue()
         {
             int maxValueBinary = 0b01111111111111111111111111111111;
             int maxValueHex = 0x7FFFFFFF;
-            
+
             Assert.AreEqual(int.MaxValue, 2147483647);
             Assert.AreEqual(int.MaxValue, maxValueBinary);
             Assert.AreEqual(int.MaxValue, maxValueHex);
         }
 
-        [Test]
+        [TestMethod]
         public void MaxValuePlus1EqualMinValue()
         {
             int maxValueHex = 0x7FFFFFFF;
@@ -74,10 +74,11 @@ namespace CSharpTests
             Assert.AreEqual(int.MinValue, maxValueHex + 1);
         }
 
-        [Test]
+        [TestMethod]
         public void SingleSignedBitEqualMinValue()
         {
-            unchecked { 
+            unchecked
+            {
                 int minValueBinary = (int)0b10000000000000000000000000000000;
                 int minValueHex = (int)0x80000000;
 
@@ -87,10 +88,11 @@ namespace CSharpTests
             }
         }
 
-        [Test]
+        [TestMethod]
         public void AllBitsEqualMinus1()
         {
-            unchecked {
+            unchecked
+            {
                 int minus1binary = (int)0b11111111111111111111111111111111;
                 int minus1hex = (int)0xFFFFFFFF;
 
@@ -99,7 +101,7 @@ namespace CSharpTests
             }
         }
 
-        [Test]
+        [TestMethod]
         public void AllBitsAndOperator40Equal40()
         {
             unchecked
@@ -110,13 +112,13 @@ namespace CSharpTests
             }
         }
 
-        [Test]
+        [TestMethod]
         public void SimpleAndOperator()
         {
             Assert.AreEqual(1, 3 & 5);
         }
 
-        [Test]
+        [TestMethod]
         public void CullingAndShifting()
         {
 
@@ -130,7 +132,7 @@ namespace CSharpTests
             Assert.AreEqual(5, shiftResult);
         }
 
-        [Test]
+        [TestMethod]
         public void ShiftingNegativeValue31TimesNeedsToCastToUnsignedToWork()
         {
             unchecked
@@ -142,20 +144,20 @@ namespace CSharpTests
             }
         }
 
-        [Test]
+        [TestMethod]
         public void ShiftingMaxValueTo1With30Shifts()
         {
             Assert.AreEqual(1, int.MaxValue >> 30); // Even though int is 32-bits the first bit is the sign bit so we don't shift 31 times but only 30 times
         }
 
-        [Test]
+        [TestMethod]
         public void LeftShifting1ToDouble()
         {
             int binary1 = 0b1;
             Assert.AreEqual(2, binary1 << 2);
         }
 
-        [Test]
+        [TestMethod]
         public void ShiftingAbove31BitsOnlyUsesFirstFiveBits()
         {
             Assert.AreEqual(0, 32 & 31);
