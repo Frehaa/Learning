@@ -41,8 +41,8 @@ namespace CSharpTestMethods
             int first8hex = 0xFF;
             int first8binary = 0b11111111;
 
-            Assert.AreEqual(31, first8hex);
-            Assert.AreEqual(31, first8binary);
+            Assert.AreEqual(255, first8hex);
+            Assert.AreEqual(255, first8binary);
         }
 
         [TestMethod]
@@ -140,7 +140,7 @@ namespace CSharpTestMethods
                 int allBits = (int)0xFFFFFFFF;
 
                 Assert.AreEqual(-1, allBits >> 31); // Might expect this to be 1, but it actually is -1
-                Assert.AreEqual(1, ((uint)allBits) >> 31);
+                Assert.AreEqual((uint)1, (uint)(allBits) >> 31);
             }
         }
 
@@ -154,7 +154,7 @@ namespace CSharpTestMethods
         public void LeftShifting1ToDouble()
         {
             int binary1 = 0b1;
-            Assert.AreEqual(2, binary1 << 2);
+            Assert.AreEqual(2, binary1 << 1);
         }
 
         [TestMethod]

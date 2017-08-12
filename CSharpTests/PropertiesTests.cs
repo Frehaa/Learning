@@ -11,7 +11,7 @@ namespace UnitTestProject
         {
             Properties prop = new Properties();
 
-            Assert.AreEqual(true, prop.Test);
+            Assert.AreEqual(false, prop.Test);
         }
 
         [TestMethod]
