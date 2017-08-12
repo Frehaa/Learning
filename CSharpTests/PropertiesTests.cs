@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestProject;
+using Learning;
 
 namespace UnitTestProject
 {
