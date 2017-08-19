@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace CSharpTests
 {
     [TestClass]
-    public class MyTestClass
+    public class SetTests
     {
         // What happens:
         // item 1 is inserted with hashcode 1 
