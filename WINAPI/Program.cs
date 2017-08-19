@@ -141,8 +141,10 @@ namespace Learning.WINAPI
                 return CallNextHookEx(IntPtr.Zero, code, wParam, lParam);
             }
 
-            KeyFlags keyboardMessageIdentifier = (KeyFlags)wParam.ToInt32();
-            
+            // The wParam in the context of a Low Level Keyboard Hook Procedure is a flag for the type of keyboard event
+            // Differentiating between key presses (and holding the key down), key releases, and key presses and releases with
+            // the alt key pressed down?
+            KeyFlags keyboardMessageIdentifier = (KeyFlags)wParam.ToInt32();            
             switch (keyboardMessageIdentifier)
             {
                 case KeyFlags.WM_KEYDOWN:
@@ -161,9 +163,17 @@ namespace Learning.WINAPI
                     Debug.Fail("Unknown flag: " + keyboardMessageIdentifier);
                     break;
             }
-            
-            KeyboardStruct kbs = Marshal.PtrToStructure<KeyboardStruct>(lParam);
-            
+
+            //  The lParam in the context of a Low Level Keyboard Hook Procedure is a pointer to a structure called KBDLLHOOKSTRUCT 
+            //  The structure contains:
+            //      a virtual key code
+            //      a hardware scan code
+            //      flags for:
+            //          extended key    
+            //          event-injection
+            //          context code
+            //          transition (key up or key down) 
+            KeyboardStruct kbs = Marshal.PtrToStructure<KeyboardStruct>(lParam);            
             Keys key = (Keys)kbs.vkCode;
             Debug.WriteLine(key);
             Debug.WriteLine(kbs.scanCode);
