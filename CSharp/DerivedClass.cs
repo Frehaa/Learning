@@ -35,6 +35,12 @@ namespace Learning
             Console.WriteLine("DerivedClass");
         }
 
+        public override int GetValueFromDerivedField()
+        {
+            Console.WriteLine("Value from derived class field");
+            return derivedInt;
+        }
+
         ~DerivedClass()
         {
             Console.WriteLine("DerivedDestructor");

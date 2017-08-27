@@ -19,6 +19,8 @@ namespace Learning
         public BaseClass()
         {
             Console.WriteLine("BaseClass");
+            int value = GetValueFromDerivedField();
+            Console.WriteLine("Value from GetValueFromDerivedField: " + value);
         }
 
         public static BaseClass operator+(BaseClass lh, BaseClass rh)
@@ -26,6 +28,12 @@ namespace Learning
             BaseClass retuener = new BaseClass();
             retuener.baseInt = lh.baseInt + rh.baseInt;
             return retuener;
+        }
+
+        public virtual int GetValueFromDerivedField()
+        {
+            Console.WriteLine("Value not from derived field");
+            return 0;
         }
     }
 }
