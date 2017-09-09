@@ -35,5 +35,10 @@ namespace Learning
             Console.WriteLine("Value not from derived field");
             return 0;
         }
+
+        public string GetNonVirtualString()
+        {
+            return "String from base";
+        }
     }
 }

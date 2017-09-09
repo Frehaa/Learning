@@ -45,6 +45,11 @@ namespace Learning
         {
             Console.WriteLine("DerivedDestructor");
         }
+
+        public new string GetNonVirtualString()
+        {
+            return "String from derived";
+        }
         
 
     }
