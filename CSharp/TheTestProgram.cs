@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
+using System.Globalization;
 
 namespace Learning
 {
@@ -18,9 +19,25 @@ namespace Learning
             //c = null;
             //"Test".Show();
 
+            IEnumerable<int>[] xs = new int[][] {
+                new int[] {1, 3, 5, 7, 9},
+                new int[] {2, 4, 6, 8, }
+            };
+           
 
+            int[] ys = Enumerable.Range(1600, 2400).ToArray();
 
-            Console.ReadKey();
+            GregorianCalendar calendar = new GregorianCalendar();
+            
+            foreach (var item in ys.Where(x => x % 7 == 0 && x > 42))
+            {
+                Console.WriteLine(item);
+            }
+            Console.WriteLine();
+            foreach (var item in ys.Where(x => calendar.IsLeapYear(x)))
+            {
+                Console.WriteLine(item);
+            }
         }
 
         private static async Task Write(TextWriter writer, string message)
