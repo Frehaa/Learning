@@ -58,6 +58,7 @@
     <Compile Include="PropertiesTests.cs" />
     <Compile Include="BinaryStuff.cs" />
     <Compile Include="TypesStuff.cs" />
+    <Compile Include="UriTests.cs" />
     <Compile Include="UsingStaticVsNonStaticClass.cs" />
     <Compile Include="ValueVsReference.cs" />
   </ItemGroup>
