@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncStuff.cs" />
     <Compile Include="BaseClass.cs" />
     <Compile Include="DelegateClass.cs" />
     <Compile Include="DerivedClass.cs" />
