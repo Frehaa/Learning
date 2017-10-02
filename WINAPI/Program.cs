@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
@@ -12,9 +8,11 @@ namespace Learning.WINAPI
     class Program
     {
         public delegate int HookProc(int code, IntPtr wParam, IntPtr lParam);
+        public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, int hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
         private static HookProc keyboardHookProcedure = LowLevelKeyboardHookCallback;
         private static HookProc mouseHookProcedure = LowLevelMouseHookCallback;
+        private static WinEventDelegate winEventDelegate = WinEventHookCallback;
 
         private static IntPtr keyboardHookId;
         private static IntPtr mouseHookId;
@@ -258,6 +256,11 @@ namespace Learning.WINAPI
             return CallNextHookEx(IntPtr.Zero, code, wParam, lParam);
         }
 
+        private static void WinEventHookCallback(IntPtr hWinEventHook, uint eventType, int hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
+        {
+            throw new NotImplementedException();
+        }
+
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(HookType hookType, HookProc hookProc, IntPtr hInstance, uint threadId);
 
@@ -276,5 +279,8 @@ namespace Learning.WINAPI
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int GetLastError();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr SetWindowEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc, WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
     }
 }
