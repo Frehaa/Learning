@@ -25,9 +25,11 @@ namespace Learning
 
         public static BaseClass operator+(BaseClass lh, BaseClass rh)
         {
-            BaseClass retuener = new BaseClass();
-            retuener.baseInt = lh.baseInt + rh.baseInt;
-            return retuener;
+            BaseClass result = new BaseClass
+            {
+                baseInt = lh.baseInt + rh.baseInt
+            };
+            return result;
         }
 
         public virtual int GetValueFromDerivedField()

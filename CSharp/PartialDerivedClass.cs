@@ -8,12 +8,12 @@ namespace Learning
 {
     partial class DerivedClass
     {
-        public void partialClassMethod()
+        public void PartialClassMethod()
         {
             Console.WriteLine("Partial class Method");
         }
 
-        partial void partialMethod(int test);
+        partial void PartialMethod(int test);
     }
 
     
