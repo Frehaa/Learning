@@ -5,3 +5,5 @@
 \packages
 .vs
 *\*.user
+LearningF#/*.dll
+LearningF#/*.exe
