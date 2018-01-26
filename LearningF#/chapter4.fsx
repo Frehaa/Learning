@@ -1,4 +1,6 @@
 let myList = 3::2::[];;
+open System.Data.Odbc
+open System.Runtime.InteropServices
 
 for i in [0..10] do printfn "%i" i;;
 for i in [0..10..100] do printfn "%i" i;;
@@ -115,11 +117,122 @@ let colMap m = colCntrs m (countries m);;
 colMap exMap;;
 
 (* 4.1 *)
+let upto n = [1..n];;
+upto 10;;
+
 (* 4.2 *)
+let downto1 n = [n..(-1)..1];;
+downto1 10;;
+
 (* 4.3 *)
+let evenN n = [2..2..n*2];;
+evenN 5;;
+
 (* 4.4 *)
+let rec altsum2 = function
+| [] -> 0
+| x::xs -> x + -(altsum2 xs);;
+
+altsum2 [1..3];;
+
+// altsum2 [1, 2, 3]
+// -> 1 + -(altsum2 [2, 3])
+// -> 1 + -(2 + -(altsum2 [3]))
+// -> 1 + -(2 + -(3 + -(altsum2 [])))
+// -> 1 + -(2 + -(3 + -(0)))
+// -> 1 + -(2 + -(3))
+// -> 1 + -(2 -3)
+// -> 1 - 2 + 3
+// -> -1 + 3
+// -> 2
+
 (* 4.5 *)
+let rec rmodd = function
+| x::xs when x % 2 = 1 -> rmodd(xs)
+| x::xs -> x::rmodd(xs)
+| [] -> [];;
+
+rmodd [1..1..100];;
+
+
 (* 4.6 *)
+let rec rmeven = function
+| x::xs when x % 2 = 0 -> rmeven(xs)
+| x::xs -> x::rmeven(xs)
+| [] -> [];;
+
+rmeven [1..100];;
+
 (* 4.7 *)
+let rec multiplicity x xs = 
+    match xs with
+    | [] -> 0    
+    | x'::xs' -> 
+        if x=x' then
+            1 + multiplicity x xs'
+        else
+            multiplicity x xs';;
+
+multiplicity 5 [1;5;2;5;3;5;4;5;5;];;
+multiplicity 10 [];;
+
 (* 4.8 *)
+let rec split = function
+| [x0;x1] -> ([x0],[x1])
+| x0::x1::xs -> 
+            let (odd, even) = split xs
+            (x0::odd, x1::even)
+| _         -> failwith "Invalid list size";;
+
+split [1..10];;
+split [1..11];;
+
+
 (* 4.9 *)
+let rec zip = function
+| ([x0], [x1]) -> [(x0, x1)]
+| (x0::xs0, x1::xs1) -> (x0, x1)::zip(xs0, xs1)
+| _ -> failwith "Invalid list size";;
+
+zip (split [1..10]);;
+zip ([1..5], [11..15]);;
+zip ([1;2], [11]);;
+
+(* 4.10 *)
+let rec prefix xs ys = 
+    match xs, ys with
+    | x::xs', y::ys' -> x = y && prefix xs' ys'
+    | _::_, [] -> false
+    | [], _::_' -> true
+    | [], [] -> true;;
+
+prefix [1..3] [1..5];;
+prefix [2..5] [2..5];;
+prefix [3..5] [2..5];;
+prefix [3..5] [2..4];;
+prefix [10..20] [10..14];;
+
+(* 4.11 *)
+  
+
+(* 4.12 *)
+(* 4.13 *)
+
+
+(* 4.14 *)
+(* 4.15 *)
+
+
+(* 4.16 *)
+(* 4.17 *)
+
+
+(* 4.18 *)
+(* 4.19 *)
+
+
+(* 4.20 *)
+(* 4.21 *)
+
+
+(* 4.22 *)
