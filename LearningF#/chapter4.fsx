@@ -203,36 +203,104 @@ let rec prefix xs ys =
     match xs, ys with
     | x::xs', y::ys' -> x = y && prefix xs' ys'
     | _::_, [] -> false
-    | [], _::_' -> true
-    | [], [] -> true;;
+    | _ -> true;;
+    // | [], _::_' -> true
+    // | [], [] -> true;;
 
 prefix [1..3] [1..5];;
 prefix [2..5] [2..5];;
 prefix [3..5] [2..5];;
 prefix [3..5] [2..4];;
 prefix [10..20] [10..14];;
+prefix [1] [];;
+prefix [] [1];;
+prefix [1] [1];;
 
 (* 4.11 *)
-  
+
+(* 1) *)
+let rec count (xs, x) = 
+    match xs with 
+    | x'::_ when x' > x -> 0
+    | x'::xs' when x' = x -> 1 + count (xs', x)
+    | [] -> 0
+    | _::xs' -> count(xs', x);;
+
+    // if List.isEmpty xs then 0
+    // else
+    //     let x'::xs' = xs
+    //     if x' > x then 0 
+    //     else if x' = x then 1 + count (xs', x) 
+    //     else count (xs', x);;
+
+count ([1; 2; 3; 3; 3; 4; 3], 3);;
+count ([3], 3);;
+count ([], 3);;
+
+(* 2) *)
+let rec insert (xs, x) = 
+    match xs with
+    | (x'::_) as xs' when x' >= x -> x::xs'
+    | x'::xs' when x' < x -> x'::insert(xs', x)
+    | _ -> [x];;
+
+insert ([1;3;6;10;], 5);;
+insert ([], 5);;
+insert ([1;3;6;10;], 15);;
+insert ([5;6;7], 3)
+
+
+(* 3) *)
+
+let rec intersect (xs, ys) = 
+    match xs, ys with
+    | x::xs', y::ys' when x = y -> x::intersect (xs', ys')
+    | x::xs', ((y::_) as ys') when x < y -> intersect (xs', ys')
+    | (_::_) as xs', _::ys' -> intersect (xs', ys')
+    | _, _ -> [];;
+
+intersect([1;1;1;2;2], [1;1;2;4]);;
+intersect([1;1;1;3;3;5;6], [2;2;4;7]);;
+intersect([1], [1;1;2]);;
+intersect([1], []);;
+
+(* 4) *)
+let rec plus (xs, ys) = 
+    match xs, ys with
+    | x::xs', ((y::_) as ys') when x < y -> x::plus(xs', ys')
+    | _::_ as xs', y::ys' -> y::plus(xs', ys')
+    | [] as xs', y::ys' -> y::plus(xs', ys')
+    | x::xs', ([] as ys') -> x::plus(xs', ys')
+    | _ -> [];;
+
+plus([1;1;2],[1;2;4]);;
+plus([],[1;2;4]);;
+plus([1;1;2],[]);;
+    
+(* 5) *)
+let rec minus (xs, ys) = 
+    match xs, ys with
+    | x::xs', y::ys' when x = y -> minus(xs', ys')
+    | x::xs', (y::_ as ys') when x < y -> x::minus(xs', ys')
+    | x::xs', [] -> x::minus(xs', [])
+    | x::_ as xs', y::ys' when y < x -> minus(xs', ys')
+    | [], _ -> []
+    | _ -> [];;
+
+minus([1;1;1;2;2],[1;1;2;3]);;
+minus([1;1;2;3],[1;1;1;2;2]);;
+minus([],[1;1;1;2;2]);;
+minus([1;1;1;2;2], []);;
 
 (* 4.12 *)
 (* 4.13 *)
-
-
 (* 4.14 *)
 (* 4.15 *)
-
-
 (* 4.16 *)
 (* 4.17 *)
-
-
 (* 4.18 *)
 (* 4.19 *)
-
-
 (* 4.20 *)
 (* 4.21 *)
-
-
 (* 4.22 *)
+(* 4.23 *)
