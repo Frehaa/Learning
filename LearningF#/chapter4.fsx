@@ -361,12 +361,33 @@ the reversed elements, for example:
 revrev [[1;2];[3;4;5]] = [[5;4;3];[2;1]]
 *)
 
-let rec revrev = function 
+let rec rev = function 
 | [] -> []
-| [xs] -> [xs]
-| [x::xs] -> 
+| x::xs -> (rev xs)@[x];;
+
+let rec revrev = function 
+    | [] -> []
+    | x::xs -> (revrev xs)@[rev x];;
+    
+revrev [[1;2];[3;4;5]];;
 
 (* 4.16 *)
+let rec f = function
+| (x, []) -> []
+| (x, y::ys) -> (x+y)::f(x-1, ys);;
+
+(10 ,[for _ in [1..10] do yield 0]) |> f;;
+
+let rec g = function
+| [] -> []
+| (x,y)::s -> (x,y)::(y,x)::g s;;
+
+let rec h = function
+| [] -> []
+| x::xs -> x::(h xs)@[x];;
+
+[1;2;3;] |> h;;
+
 (* 4.17 *)
 (* 4.18 *)
 (* 4.19 *)
