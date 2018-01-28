@@ -293,9 +293,79 @@ minus([],[1;1;1;2;2]);;
 minus([1;1;1;2;2], []);;
 
 (* 4.12 *)
+let rec sum p xs = 
+    match xs with
+    | x::xs' when p x -> x + sum p xs'
+    | _::xs' -> sum p xs'
+    | _ -> 0;;
+
+sum (fun i -> i > 0)  [-10; 5; 3; -2; -5; 2];;
+sum (fun i -> i > 0)  [];;
+sum (fun i -> i > 0)  [-15];;
+sum (fun i -> i > 0)  [15];;
+
 (* 4.13 *)
+(* 1) *)
+let rec findMin xs = 
+    match xs with
+    | [x'] -> x'
+    | x'::xs' -> min x' (findMin xs')
+    | [] -> failwith "Invalid size";;
+
+findMin [5;7;3;8;1];;
+findMin [1;2;3;4;5;6;];;
+findMin [5];;
+
+(* 2) *)
+let rec delete (a, xs) = 
+    match xs with
+    | x::xs' when x = a -> xs'
+    | x::xs' -> x::delete(a, xs')
+    | [] -> [];;
+
+delete (5, [1;2;3]);;
+delete (2, [1;2;3]);;
+delete (2, []);;
+delete (2, [2;2]);;
+
+(* 3) *)
+let rec sort xs = 
+    match xs with
+    | [] -> []
+    | _ -> 
+        let minimum = findMin xs
+        let xs' = delete (minimum, xs)
+        minimum::(sort xs');;
+
+sort [1;2;3];;
+sort [3;2;1;];;
+sort [2;1;3;];;
+sort [];;
+sort [2];;
+
 (* 4.14 *)
+// Declare a function of type int list -> int option for finding the smallest element in an integer list.
+let rec findMinOpt = function
+| [] -> None
+| [x] -> Some x
+| x::xs -> min (Some x) (findMinOpt xs)
+
+findMinOpt [5;7;3;8;1];;
+findMinOpt [1;2;3;4;5;6;];;
+findMinOpt [5];;
+findMinOpt ([] : int list);;
+
 (* 4.15 *)
+(*  Declare an F# function revrev working on a list of lists, that maps a list to the reversed list of
+the reversed elements, for example:
+revrev [[1;2];[3;4;5]] = [[5;4;3];[2;1]]
+*)
+
+let rec revrev = function 
+| [] -> []
+| [xs] -> [xs]
+| [x::xs] -> 
+
 (* 4.16 *)
 (* 4.17 *)
 (* 4.18 *)
