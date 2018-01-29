@@ -76,7 +76,13 @@ let rec isMember a = function
 | [] -> false
 | x::xs -> x = a || isMember a xs;;
 
-let areNb m c1 c2 = isMember (c1, c2) m || isMember (c2, c1) m;;
+// let areNb m c1 c2 = isMember (c1, c2) m || isMember (c2, c1) m;;
+let rec areNb m c1 c2 = 
+    match m with
+    | [] -> false
+    | x::xs -> x = (c1, c2) || x = (c2, c1) || areNb xs c1 c2;;
+
+areNb exMap "a" "c";;
 
 let rec canBeExtBy m col c = 
     match col with
@@ -389,8 +395,35 @@ let rec h = function
 [1;2;3;] |> h;;
 
 (* 4.17 *)
+
+// let xs = [1;2;]
+//  x  =1
+// let ys = p q [2];
+    // x = 2
+    // let ys = p q []
+        // []
+    // if q x then x::ys else ys@[x]  
+
+let rec p q = function
+    | [] -> []
+    | x::xs -> let ys = p q xs
+               if q x then x::ys else ys@[x];;
+
+p (fun x -> x % 2 = 0) [1..40];;
+
 (* 4.18 *)
+
+let rec f2 g = function
+| [] -> []
+| x::xs -> g x :: f2 (g << g) xs;;
+
+f2 (fun x -> x + 1) [1;1;1];;
+
+// ((fun x -> x + 12) >> (fun x -> x - 13)) 25;;
+
 (* 4.19 *)
+// See areNb
+
 (* 4.20 *)
 (* 4.21 *)
 (* 4.22 *)
