@@ -361,10 +361,18 @@ the reversed elements, for example:
 revrev [[1;2];[3;4;5]] = [[5;4;3];[2;1]]
 *)
 
-let rec revrev = function 
-| [] -> []
-| [xs] -> [xs]
-| [x::xs] -> 
+// let rec revrev = function 
+// | [] -> []
+// | [xs] -> [xs]
+// | [x::xs] -> 
+
+let rec rev = function 
+| x::xs  when x :? list -> (rev xs)@(rev x)
+| x -> x;;
+
+rev [1;2;3];;
+rev ([[3;2;1];[6;5]] : int list list)
+
 
 (* 4.16 *)
 (* 4.17 *)
