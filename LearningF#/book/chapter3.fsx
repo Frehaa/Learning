@@ -36,9 +36,9 @@ let c1 = (10, 19, 11);;
 let c2 = (0, 0, 0);;
 
 let ( +. ) (pounds1, shillings1, pence1) (pounds2, shillings2, pence2) = 
-    let extraS = if (pence1 + pence2) > 11 then 1 else 0
-    let extraP = if (shillings1 + shillings2 + extraS) > 19 then 1 else 0
-    ((pounds1 + pounds2 + extraP), ((shillings1 + shillings2 + extraS) % 20), ((pence1 + pence2) % 12));;
+    let carryShilling = if (pence1 + pence2) > 11 then 1 else 0
+    let carryPound = if (shillings1 + shillings2 + carryShilling) > 19 then 1 else 0
+    ((pounds1 + pounds2 + carryPound), ((shillings1 + shillings2 + carryShilling) % 20), ((pence1 + pence2) % 12));;
     
 c1 +. c2;;
 c1 +. (0, 0, 1);;
@@ -60,8 +60,6 @@ let ( +% ) : BritishCurrency -> BritishCurrency -> BritishCurrency  = fun a b ->
 bc1 +% bc2;;
 bc1 +% {pounds = 0; shillings = 0; pence = 1};;
 
-
-2 + 2;;
 (* 3.3 *)
 (* The set of complex numbers is the set of pairs of real numbers. Complex numbers behave almost
 like real numbers if addition and multiplication are defined by:
@@ -80,8 +78,6 @@ type Complex = float * float;;
 let ( +.+ ) : Complex -> Complex -> Complex = fun (a,b) (c,d) -> (a + c, b + d);;
 let ( *.* ) : Complex -> Complex -> Complex = fun (a,b) (c,d) -> (a * c - b * d, b * c + a * d);;
 let (~-.) : Complex -> Complex = fun (a,b) -> (-a, -b);;
-
-
 let complex1 = (1.5, 2.3);;
 let complex2 = (3.3, 1.2);;
 

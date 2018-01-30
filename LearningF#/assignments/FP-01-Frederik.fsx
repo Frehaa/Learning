@@ -1,50 +1,50 @@
 (* Exercise 1.1: Write a function sqr:int->int so that sqr x returns x^2 *)
-let sqr x = x * x
+let sqr x = x * x;;
 
-sqr 5 // 25
+sqr 5;; // 25
 
 (* Exercise 1.2: Write a function pow :  float -> float -> float so that pow x n returns x^n. You can use the library function: System.Math.Pow. *)
 let rec pow x n = 
     match n with
     | 0 -> 1.0
-    | b -> x * pow x (n-1)
+    | n -> x * pow x (n-1);;
 
-pow 3.0 3 // 27.0
+pow 3.0 3;; // 27.0
 
 (* Exercise 1.3: Solve HR, exercise 1.1*)
-let g n = n + 4
+let g n = n + 4;;
 
-g 4 // 8
+g 4;; // 8
 
 (* Exercise 1.4: Solve HR, exercise 1.2 *)
-let h (x, y) = System.Math.Sqrt(x ** 2.0 + y ** 2.0)
+let h (x, y) = System.Math.Sqrt(x ** 2.0 + y ** 2.0);;
 
 h (3.0, 4.0) // 5.0
 
 (* Exercise 1.5: Solve HR, exercise 1.4 *)
 let rec f = function
 | 0 -> 0
-| n -> n + f (n-1) 
+| n -> n + f (n-1) ;;
 
-f 10 // 55
+f 10;; // 55
 
 (* Exercise 1.6: Solve HR, exercise 1.5 *)
 let rec fib = function
 | 0 -> 0
 | 1 -> 1
-| n -> fib (n-1) + fib (n-2)
+| n -> fib (n-1) + fib (n-2);;
 
-fib 4 // 3
+fib 4;; // 3
 
 (* Exercise 1.7: Solve HR, exercise 1.6 *)
 let rec sum = function
 | (m, 0) -> m
-| (m, n) -> m + n + sum (m, n - 1)
+| (m, n) -> m + n + sum (m, n - 1);;
 
 // sum (m, n) = m + n + sum (m, n - 1)
 
-sum (0, 10) // 55
-sum (1, 3) // 10
+sum (0, 10);; // 55
+sum (1, 3);; // 10
 
 (* Exercise 1.8: Solve HR, exercise 1.7 *)
 // (System.Math.PI, fact -1) : (float * int -> int)
@@ -79,18 +79,19 @@ sum (1, 3) // 10
 // > dup "Hi ";;
 // val it : string = "Hi Hi "
 
-let dub s = s + s
+let dub s = s + s;;
 
-dub "Hi "
+dub "Hi ";;
 
 (* Exercise 1.11: Write a function dupn:string->int->string so that dupn s n creates the concatenation of n copies of s. For example: *)
 // val dupn : string -> int -> string
 // > dupn "Hi " 3;;
 // val it : string = "Hi Hi Hi "
 
-let rec dupn s n = match n with
-| 0 -> ""
-| n -> s + dupn s (n-1)
+let rec dupn s n = 
+    match n with
+    | 0 -> ""
+    | n -> s + dupn s (n-1);;
 
 (* Exercise 1.12: Assume the time of day is represented as a pair(hh, mm):int * int.
                    Write a function timediff:int * int->int * int->int so that timediff t1 t2 computes the difference in minutes between t1 and t2, i.e., t2-t1. 
@@ -123,10 +124,10 @@ minutes (23,1);; // 1381
 
 (* Exercise 1.14 Solve HR, exercise 2.2 *)
 let rec pow : (string * int) -> string = function
-| (s, 0) -> s
+| (s, 1) -> s
 | (s, n) -> s + pow(s, n-1);;
 
-pow ("Test ", 3);; // "Test Test Test Test "
+pow ("Test ", 3);; // "Test Test Test "
 
 (* Exercise 1.15 Solve HR, exercise 2.8 *)
 let rec bin = function 
