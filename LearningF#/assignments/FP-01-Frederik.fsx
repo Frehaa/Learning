@@ -57,13 +57,14 @@ sum (1, 3) // 10
 // let f a = a + 1
 // let g b = (f b) + a
 
-// Env = a -> 5
-//       f -> "Adds one method"
-//       g -> "Uses f and adds a, method"
+// Env = [a -> 5
+//        f -> "Adds one method"
+//        g -> "Uses f and adds a, method"]
 
 // g 3
-// ~> f n + a [b -> 3, a -> 5]
+// ~> (f b) + a,  [b -> 3, a -> 5]
 // ~> f 3 + 5
+// ~> (a + 1) + 5, [a -> 3]
 // ~> (3 + 1) + 5
 // ~> 4 + 5
 // ~> 9
@@ -106,7 +107,6 @@ let timediff (hh1, mm1) (hh2, mm2) =
                                      
 timediff (12,34) (11,35);; // -59
 timediff (12,34) (13,35);; // 61
-                                   
 
 (* Exercise 1.13: Write a function minutes:int * int->int to compute the number of minutes since midnight. 
    Easily done using the function timediff. A few examples: *)
@@ -116,18 +116,69 @@ timediff (12,34) (13,35);; // 61
 // > minutes (23,1);;
 // val it : int = 1381
 
-let minutes x = timediff (24, 00) x |> (fun x -> if x < 0 then 60 * 24 - x else x);;
+let minutes x = timediff (24, 00) x |> (fun x -> if x < 0 then x + 60 * 24 else x);;
 
-
-timediff (24, 00) (14, 24)
-minutes (24, 55);;
-minutes (14,24);;
-minutes (23,1);;
+minutes (14,24);; // 864
+minutes (23,1);; // 1381
 
 (* Exercise 1.14 Solve HR, exercise 2.2 *)
+let rec pow : (string * int) -> string = function
+| (s, 0) -> s
+| (s, n) -> s + pow(s, n-1);;
+
+pow ("Test ", 3);; // "Test Test Test Test "
+
 (* Exercise 1.15 Solve HR, exercise 2.8 *)
+let rec bin = function 
+| (n, k) when n < 0 || k < 0 || k > n -> failwith "Invalid argument"
+| (n, k) when n = k -> 1
+| (n, 0) -> 1
+| (n, k) -> bin(n-1, k-1) + bin(n-1, k);;
+
+bin (4, 2);; // 
+
 (* Exercise 1.16 Solve HR, exercise 2.9 *)
+// let rec f = function 
+// | (0,y) -> y
+// | (x,y) -> f (x-1, x*y);;
+
+// 1)
+//  f : int * int -> int
+
+// 2)
+// Teminates if first value in pair is >= 0
+
+// 3)
+// f(2,3);;
+// -> f (x - 1, x * y) , [x -> 2, y -> 3]
+// -> f (2 - 1, 2 * 3)
+// -> f (2-1, 6)
+// -> f (1, 6)
+// -> f (x-1, x * y), [x -> 1, y -> 6]
+// -> f (1-1, 1 * 6)
+// -> f (0, 6)
+// -> 6
+
+// 4)
+// f(x,y) = y * x!
+
 (* Exercise 1.17 Solve HR, exercise 2.10 *)
+// let test (c,e) = if c then e else 0;;
+
+// 1) 
+// test : bool * int -> int
+
+// 2)
+// Doesn't evaluate since fact -1 doesn't evaluate
+
+// 3)
+// Can evaluate since fact -1 doesn't get evaluated
+
 (* Exercise 1.18 Solve HR, exercise 2.13 *)
 
+// curry    : (’a * ’b -> ’c) -> ’a -> ’b -> ’c
+let curry f a b = f(a, b);;
+
+// uncurry  : (’a -> ’b -> ’c) -> ’a * ’b -> ’c
+let uncurry f (a, b) = f a b;;
 
