@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 
@@ -10,8 +12,52 @@ namespace CSharpCore
         static void Main(string[] args)
         {
             //Stuff();
-            ProducerConsumer();
+            //ProducerConsumer();
             //UsingAnActionBlock();
+            //FileIO();
+            StructPassing();
+
+            Console.ReadKey();
+        }
+
+        private static void StructPassing()
+        {
+            var m = new MyStruct
+            {
+                Value = true,
+                OtherValue = true
+            };
+
+            TakesStruct(m);
+
+            m.Value = false;
+            m.OtherValue = false;
+
+            Console.WriteLine($"From outside: {m.Value} - {m.OtherValue}");
+            Console.WriteLine(m.GetHashCode());
+
+        }
+
+        private async static void TakesStruct(MyStruct m)
+        {
+            await Task.Delay(300);
+            await Task.Run(() =>
+            {
+                Console.WriteLine($"From inside: {m.Value} - {m.OtherValue}");
+                Console.WriteLine(m.GetHashCode());
+            });
+        }
+
+        struct MyStruct
+        {
+            public bool Value { get; set; }
+            public bool OtherValue { get; set; }
+        }
+
+        private static void FileIO()
+        {
+            FileStream stream1 = new FileStream("learning.txt", FileMode.Open, FileAccess.Write, FileShare.None);
+            //FileStream stream2 = new FileStream("learning.txt", FileMode.Open, FileAccess.Read);
         }
 
         private static void UsingAnActionBlock()
