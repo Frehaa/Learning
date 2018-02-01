@@ -133,7 +133,7 @@ pow ("Test ", 3);; // "Test Test Test "
 let rec bin = function 
 | (n, k) when n < 0 || k < 0 || k > n -> failwith "Invalid argument"
 | (n, k) when n = k -> 1
-| (n, 0) -> 1
+| (_, 0) -> 1
 | (n, k) -> bin(n-1, k-1) + bin(n-1, k);;
 
 bin (4, 2);; // 
