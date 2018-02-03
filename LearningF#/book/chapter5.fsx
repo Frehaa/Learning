@@ -1,6 +1,7 @@
 // 5.1 Give a declaration for List.filter using List.foldBack.
 
 List.filter (fun x -> x < 5) [1..10];;
+open System.Drawing
 
 let myFilter f a= List.foldBack (fun x xs -> if f x then x::xs else xs) a [];;
 
@@ -35,9 +36,9 @@ let rec downto1 f n e =
     | x when x > 0 -> downto1 f (x - 1) (f(x, e))
     | _ -> e;;
 
-let rec downto1 f n e = 
-    if n <= 0 then e 
-    else List.fold (fun e n -> f (n, e)) e [n..(-1)..1];;
+// let rec downto1 f n e = 
+//     if n <= 0 then e 
+//     else List.fold (fun e n -> f (n, e)) e [n..(-1)..1];;
 
 
 downto1 (fun (a, b) -> a + b) 5 0;;
@@ -78,58 +79,123 @@ type Map = (Country * Country) list;;
 
 
 (* 5.6 
-    We define a relation from a set A to a set B as a subset of A × B . A relation r ? is said to be
-smaller than r , if r ? is a subset of r , that is, if r ? ⊆ r . A relation r is called finite if it is a
-finite subset of A × B . Assuming that the sets A and B are represented by F# types ’a and ’b
+    We define a relation from a set A to a set B as a subset of A × B. A relation r' is said to be
+smaller than r, if r' is a subset of r, that is, if r' ⊆ r. A relation r is called finite if it is a
+finite subset of A × B. Assuming that the sets A and B are represented by F# types ’a and ’b
 allowing comparison we can represent a finite relation r by a value of type set<’a * ’b>. *)
 
-
+let mySet = set [(1, "a");(1, "b");(2, "a");(3, "b")];;
 
 (* 1. The domain dom r of a relation r is the set of elements a in A where there exists an element
 b in B such that (a,b) ∈ r . Write an F# declaration expressing the domain function. *)
 
+// {"a", "b", "c"} x {1, 2} = {("a", 1), ("a", 2), 
+//                             ("b", 1), ("b", 2),
+//                             ("c", 1), ("c", 2)}
+
+let dom r = Set.fold (fun (xs : Set<'a>) (a, _) -> xs.Add a) (set []) r;;
+
+dom mySet;;
+
+
 (* 2. The range rng r of a relation r is the set of elements b in B where there exists an element a
 in A such that (a,b) ∈ r . Write an F# declaration expressing the range function. *)
 
-(* 3. If r is a finite relation from A to B and a is an element of A , then the application of r to a ,
-applyr a , is thesetofelements b in B suchthat (a,b) ∈ r . WriteanF#declaration expressing
+let range r = Set.fold (fun (xs : Set<'a>) (_, b) -> xs.Add b) (set []) r;;
+
+range mySet;;
+
+(* 3. If r is a finite relation from A to B and a is an element of A , then the application of r to a,
+apply r a , is the set of elements b in B such that (a,b) ∈ r . Write an F# declaration expressing
 the apply function. *)
 
-(* 4. A relation r from a set A to the same set is said to be symmetric if (a 1 ,a 2 ) ∈ r implies
-(a 2 ,a 1 ) ∈ r for any elements a 1 and a 2 in A . The symmetric closure of a relation r is the
-smallest symmetric relation containing r . Declare an F# function to compute the symmetric
+// let apply r a = Set.fold (fun (xs :Set<'a>) (a', b) -> if a = a' then xs.Add b else xs) (set []) r;;
+
+let apply r a = Set.filter (fun (a', _) -> a = a') r |> Set.map (fun (_, b) -> b);;
+
+apply mySet 1;;
+
+(* 4. A relation r from a set A to the same set is said to be symmetric if (a1 ,a2 ) ∈ r implies
+(a2 , a1 ) ∈ r for any elements a 1 and a 2 in A . The symmetric closure of a relation r is the
+smallest symmetric relation containing r. Declare an F# function to compute the symmetric
 closure. *)
+
+let myAASet = set [(1,1); (1,3); (2, 3); (3, 2); (3, 3); (4, 4)]
+
+let rec symmetric r = 
+    if Set.isEmpty r then r
+    else 
+        let (a, b) = r.MinimumElement
+        let s = symmetric (r.Remove (a, b))
+        if a = b then s.Add (a, b)
+        else s;;
+          
+symmetric myAASet;;
 
 (* 5. The relation composition r ◦◦ s of a relation r from a set A to a set B and a relation s from
 B to a set C is a relation from A to C . It is defined as the set of pairs (a,c) where there exist
 an element b in B such that (a,b) ∈ r and (b,c) ∈ s . Declare an F# function to compute the
 relational composition. *)
+let set1 = set [(1, 'a');(1, 'b');(2, 'b');(2, 'c');(3, 'c');]
+let set2 = set [('a', "The a string" );('b', "The b string");('c', "The c string");('d', "The d string");('a', "The last string");] 
 
-(* 6. A relation r from a set A to the same set A is said to be transitive if (a 1 ,a 2 ) ∈ r and
-(a 2 ,a 3 ) ∈ r implies (a 1 ,a 3 ) ∈ r for any elements a 1 ,a 2 and a 3 in A . The transitive closure
-of a relation r is the smallest transitive relation containing r . If r contains n elements, then
+let addSet s r = Set.fold (fun (xs : Set<'a>) x -> xs.Add x) s r;;
+
+let composition s r = 
+    let rec compositionAccumulator s r t =
+        if Set.isEmpty s then t
+        else 
+            let (a:'a, b:'b) = Set.minElement s
+            let all = Set.fold (fun xs x -> Set.add (a, x) xs) t (apply r b)
+            compositionAccumulator (s.Remove (a, b)) r all
+    compositionAccumulator s r (set []);;
+
+let rec composition2 s r = 
+    if Set.isEmpty s then set []
+    else
+        let (a:'a, b:'b) = Set.minElement s
+        let t = composition2 (s.Remove (a, b)) r
+        Set.fold (fun xs x -> Set.add (a, x) xs) t (apply r b);;
+
+composition set1 set2;;
+
+(* 6. A relation r from a set A to the same set A is said to be transitive if (a1, a2) ∈ r and
+(a2, a3) ∈ r implies (a1, a3) ∈ r for any elements a1, a2 and a3 in A. The transitive closure
+of a relation r is the smallest transitive relation containing r. If r contains n elements, then
 the transitive closure can be computed as the union of the following n relations:
 r ∪ (r ◦◦ r) ∪ (r ◦◦ r ◦◦ r) ∪ ··· ∪ (r ◦◦ r ◦◦ ··· ◦◦ r)
 Declare an F# function to compute the transitive closure. *)
 
+let trans = set [(1,2);(2,3);(3,4);(4,5);];;
+
+let rec transitiveClosure r = 
+    let c = (composition r r)
+    let u = (Set.union r c)
+    if r = u then u
+    else transitiveClosure u;;
+    
+transitiveClosure trans;;
+
 (* 5.7 Declare a function allSubsets such that allSubsets n k is the set of all subsets of
->>>>>>> 3c8c041c37a18537e2e2feba136a76927e2c640b
 {1,2,...,n} containing exactly k elements. Hint: use ideas from Exercise 2.8. For example,
 ? n
 k
 ?
-is the number of subsets of {1,2,...,n} containing exactly k elements.
+is the number of subsets of {1,2,...,n} containing exactly k elements. *)
 
-5.8 Give declarations for makeBill3 using map.fold rather than map.foldBack.
-5.9 Declare a function to give a purchase map (see Version 3 on Page 118) on the basis of a list of
-items (from the Versions 1 and 2).
-5.10 Extend the cash register example to take discounts for certain articles into account. For example,
-find a suitable representation of discounts and revise the function to make a bill accordingly.
-5.11 Give a solution for Exercise 4.23 using the Set and Map libraries.
-=======
-(* 5.8 Give declarations for makeBill3 using map.fold rather than map.foldBack.
+// 5.8 Give declarations for makeBill3 using map.fold rather than map.foldBack.
+
+// 5.9 Declare a function to give a purchase map (see Version 3 on Page 118) on the basis of a list of
+// items (from the Versions 1 and 2).
+
+// 5.10 Extend the cash register example to take discounts for certain articles into account. For example,
+// find a suitable representation of discounts and revise the function to make a bill accordingly.
+
+// 5.11 Give a solution for Exercise 4.23 using the Set and Map libraries.
+
+(* 5.8 Give declarations for makeBill3 using map.fold rather than map.foldBack. *)
 (* 5.9 Declare a function to give a purchase map (see Version 3 on Page 118) on the basis of a list of
-items (from the Versions 1 and 2).
+items (from the Versions 1 and 2). *)
 (* 5.10 Extend the cash register example to take discounts for certain articles into account. For example,
-find a suitable representation of discounts and revise the function to make a bill accordingly.
+find a suitable representation of discounts and revise the function to make a bill accordingly. *)
 (* 5.11 Give a solution for Exercise 4.23 using the Set and Map libraries. *)
