@@ -177,25 +177,36 @@ let rec transitiveClosure r =
 transitiveClosure trans;;
 
 (* 5.7 Declare a function allSubsets such that allSubsets n k is the set of all subsets of
-{1,2,...,n} containing exactly k elements. Hint: use ideas from Exercise 2.8. For example,
-? n
-k
-?
-is the number of subsets of {1,2,...,n} containing exactly k elements. *)
+{1,2,...,n} containing exactly k elements. 
+Hint: use ideas from Exercise 2.8. For example, bin n k is the number of subsets of {1,2,...,n} containing exactly k elements. *)
+let rec bin = function 
+| (n, k) when n < 0 || k < 0 || k > n -> failwith "Invalid argument"
+| (n, k) when n = k -> 1
+| (n, 0) -> 1
+| (n, k) -> bin(n-1, k-1) + bin(n-1, k);;
+
+
+
+let allSubsets n k = 
+    match (n, k) with
+    | (n, k) when n = k -> set [n..k]
 
 // 5.8 Give declarations for makeBill3 using map.fold rather than map.foldBack.
 
-// 5.9 Declare a function to give a purchase map (see Version 3 on Page 118) on the basis of a list of
-// items (from the Versions 1 and 2).
+// 5.9 Declare a function to give a purchase map (see Version 3 on Page 118) on the basis of a list of items (from the Versions 1 and 2).
 
-// 5.10 Extend the cash register example to take discounts for certain articles into account. For example,
-// find a suitable representation of discounts and revise the function to make a bill accordingly.
+// 5.10 Extend the cash register example to take discounts for certain articles into account. 
+// For example, find a suitable representation of discounts and revise the function to make a bill accordingly.
 
 // 5.11 Give a solution for Exercise 4.23 using the Set and Map libraries.
 
 (* 5.8 Give declarations for makeBill3 using map.fold rather than map.foldBack. *)
+
 (* 5.9 Declare a function to give a purchase map (see Version 3 on Page 118) on the basis of a list of
 items (from the Versions 1 and 2). *)
+
 (* 5.10 Extend the cash register example to take discounts for certain articles into account. For example,
 find a suitable representation of discounts and revise the function to make a bill accordingly. *)
+
 (* 5.11 Give a solution for Exercise 4.23 using the Set and Map libraries. *)
+
