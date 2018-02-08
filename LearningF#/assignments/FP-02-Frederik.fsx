@@ -53,34 +53,40 @@ combinePair [1];;
 functions to add and subtract two amounts, represented by triples (pounds,shillings,pence) of
 integers, and declare the functions when a representation by records is used. Declare the func-
 tions in infix notation with proper precedences, and use patterns to obtain readable declaration *)
-let c1 = (10, 19, 11);;
-let c2 = (0, 0, 0);;
 
-let ( +. ) (pounds1, shillings1, pence1) (pounds2, shillings2, pence2) = 
-    let carryShilling = if (pence1 + pence2) > 11 then 1 else 0
-    let carryPound = if (shillings1 + shillings2 + carryShilling) > 19 then 1 else 0
-    ((pounds1 + pounds2 + carryPound), ((shillings1 + shillings2 + carryShilling) % 20), ((pence1 + pence2) % 12));;
+let toPence (l, s, p) = l * 20 * 12 + s * 12 + p
+let normalize s = (s/(20*12), (s%(20*12))/12, ((s%(20*12))%12))
     
-c1 +. c2;;
-c1 +. (0, 0, 1);;
+let (.+.) l r = normalize ((toPence l) + (toPence r))
+let (.-.) l r = normalize ((toPence l) - (toPence r))
 
-type BritishCurrency = {pounds: int; shillings: int; pence: int}
+toPence (5,3,2) // 1238
+normalize 1238 // (5,3,2)
 
-let bc1 : BritishCurrency = {pounds = 10; shillings = 19; pence = 11};
-let bc2 : BritishCurrency = {pounds = 0; shillings = 0; pence = 0};
+(1,2,3) .+. (1,2,3) // (2,4,6)
+(1,19,11) .+. (0,0,1) // (2,0,0)
+(0,0,320) .+. (0,0,0) // (1,6,8)
 
-let ( +% ) : BritishCurrency -> BritishCurrency -> BritishCurrency  = fun a b ->
-    let carryShilling = if a.pence + b.pence >= 12 then 1 else 0
-    let carryPound = if a.shillings + b.shillings + carryShilling >= 20 then 1 else 0
-    {
-        pounds = a.pounds + b.pounds + carryPound;
-        shillings = (a.shillings + b.shillings + carryShilling) % 20; 
-        pence = (a.pence + b.pence) % 12
-    };;
+(6,0,0) .-. (5,3,2) // (0,16,10)
+(5,3,2) .-. (6,0,0) // (0, -16, -10)
 
-bc1 +% bc2;;
-bc1 +% {pounds = 0; shillings = 0; pence = 1};;
+type BritishCurrency = { pounds : int; shillings : int; pence : int; }
 
+let toPence (c : BritishCurrency) = c.pounds * 20 * 12 + c.shillings * 12 + c.pence;;
+let normalize s = {pounds = s/(20*12); shillings = (s%(20*12))/12; pence = (s%(20*12))%12}
+
+let (%+%) l r = normalize ((toPence l) + (toPence r))
+let (%-%) l r = normalize ((toPence l) - (toPence r))
+
+toPence {pounds=5; shillings=3; pence=2} // 1238
+normalize 1238 // {pounds = 5; shillings = 3; pence = 2}
+
+{pounds = 1; shillings = 2; pence = 3}   %+% {pounds = 1; shillings = 2; pence = 3} // {pounds = 2; shillings = 4; pence = 6}
+{pounds = 1; shillings = 19; pence = 11} %+% {pounds = 0; shillings = 0; pence = 1} // {pounds = 2; shillings = 0; pence = 0}
+{pounds = 0; shillings = 0; pence = 320} %+% {pounds = 0; shillings = 0; pence = 0} // {pounds = 1; shillings = 6; pence = 8}
+
+{pounds = 6; shillings = 0; pence = 0} %-% {pounds = 5; shillings = 3; pence = 2} // {pounds = 0; shillings = 16; pence = 10}
+{pounds = 5; shillings = 3; pence = 2} %-% {pounds = 6; shillings = 0; pence = 0} // {pounds = 0; shillings = -16; pence = -10}
 
 (* Exercise 2.5 : Solve HR, exercise 3.3. *)
 (* The set of complex numbers is the set of pairs of real numbers. Complex numbers behave almost
@@ -97,12 +103,14 @@ repeated evaluation of identical subexpressions *)
 
 type Complex = float * float;;
 
-let ( +.+ ) : Complex -> Complex -> Complex = fun (a,b) (c,d) -> (a + c, b + d);;
-let ( *.* ) : Complex -> Complex -> Complex = fun (a,b) (c,d) -> (a * c - b * d, b * c + a * d);;
-let ( ~-. ) : Complex -> Complex = fun (a,b) -> (-a, -b);;
-let ( -.- ) : Complex -> Complex -> Complex = fun c1 c2 -> c1 +.+ -.c2;;
-let ( ~%% ) : Complex -> Complex = fun (a, b) -> (a/(a*a + b*b), -b/(a*a + b*b));;
-let ( /./ ) : Complex -> Complex -> Complex = fun c1 c2 -> c1 *.* %%c2;;
+let ( +.+ ) (a,b) (c,d) = (a + c, b + d) : float * float;;
+let ( *.* ) (a,b) (c,d) = (a * c - b * d, b * c + a * d) : float * float;;
+let ( ~-. ) (a, b) = (-a, -b) : float * float;;
+let ( -.- ) c1 c2 = c1 +.+ -.c2 : float * float;;
+let ( ~%% ) (a, b)= 
+    let c = (a*a + b*b)
+    (a/c, -b/c) : float * float;;
+let ( /./ ) c1 c2 = c1 *.* %%c2  : float * float;;
 
 let complex1 = (1.5, 2.3);;
 let complex2 = (3.3, 1.2);;
@@ -124,7 +132,6 @@ complex2 -.- complex1;;
 
 complex1 /./ complex2;;
 complex2 /./ complex1;;
-
 
 (* Exercise 2.6 : Solve HR, exercise 4.4 *)
 let rec altsum = function
