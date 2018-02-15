@@ -21,7 +21,7 @@ let rec mapInOrder f = function
     | Leaf -> Leaf
     | Node (v, l,r) -> 
         let l' = mapInOrder f l
-        Node (f v, l', mapInOrder f r);;
+        Node(v, l', mapInOrder f r);;
 
 mapInOrder ((+) 1) t5;;
 
@@ -238,8 +238,6 @@ let sinV = intpInstr [0.] (SIN) // [0.0]
 let takeFirst = function
     | []    -> failwith "Empty list"
     | x::_  -> x;;
-   
-List.find 
 
 // let intpProg is = let [x] = List.fold intpInstr [] is in x;;
 let intpProg = List.fold intpInstr [] >> takeFirst;;
@@ -266,8 +264,9 @@ extract d;; // [("T", 1000.0); ("ML", 100.0); ("BL", 10.0); ("BR", 15.0); ("RR",
 
 // 4)
 
-let rec t sum (D(n, i, ds)) = (i + List.fold t sum ds);;
+let rec t sum (D(_, i, ds)) = (i + List.fold t sum ds);;
 let total = t 0.0;;
+// let total (D(_, i, ds)) = (i + List.sumBy t ds);;
 
 total d;; // 1270.0
    
