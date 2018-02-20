@@ -7,8 +7,6 @@ Reproduce this resulting stack and heap by a systematic application of push and 
 
 
 
-
-
 // Exercise 4.2
 // 9.3 Declare an iterative solution to exercise 1.6.
 // 1.6 Declare a recursive function sum: int * int -> int, where
@@ -19,7 +17,6 @@ Reproduce this resulting stack and heap by a systematic application of push and 
 //     | (m, n) when m < 0 || n < 0 -> failwith "Invalid argument"
 //     | (m, 0) -> s
 //     | (m, n) -> sum' (s + m + n) (m, n - 1)
-
 
 let rec sum' s (m, n) = if m < 0 || n < 0 then failwith "Invalid argument"
                         elif n = 0 then s
@@ -104,33 +101,34 @@ fibA 1 0 15 // 610
 // definition of F n given in Exercise 1.5.
 
 // slow1
-let rec fibC n c = if n = 0 then c 0 
-                   elif n = 1 then c 1 
-                   else fibC (n-1) (fun n1 -> fibC (n-2) (fun n2 -> c(n2 + n1)))
+// let rec fibC n c = if n = 0 then c 0 
+//                    elif n = 1 then c 1 
+//                    else fibC (n-1) (fun n1 -> fibC (n-2) (fun n2 -> c(n2 + n1)))
 
 // Slow2
 let rec fibC n c = if n = 0 then c 0 
                    elif n = 1 then c 1
                    else fibC (n-1) (fun res -> c(res + fibC (n-2) id))
 
-fibC 43 id // 610
+fibC 15 id // 610
 
 // Compare these two functions using the directive #time, and compare this with the while-loop
 // based solution of Exercise 8.6.
 
-#time 
-for i in [1..10000000] do fib 46 // Real: 00:00:01.779, CPU: 00:00:01.781, GC gen0: 51, gen1: 26, gen2: 1
+#time
+for i in [1..10000000] do fib 46 // Real: 00:00:01.238, CPU: 00:00:01.250, GC gen0: 53, gen1: 27, gen2: 2
 
-for i in [1..10000000] do fibA 1 0 46 // Real: 00:00:01.992, CPU: 00:00:01.953, GC gen0: 54, gen1: 28, gen2: 3
+for i in [1..10000000] do fibA 1 0 46 // Real: 00:00:01.445, CPU: 00:00:01.468, GC gen0: 53, gen1: 27, gen2: 2
 
-for i in [1..1] do fibC 46 id // Real: 00:01:22.863, CPU: 00:01:21.125, GC gen0: 120897, gen1: 8, gen2: 0
+fibC 46 id // Real: 00:00:46.304, CPU: 00:00:46.140, GC gen0: 52893, gen1: 5, gen2: 0
 
-for i in [1..10000000] do () // Real: 00:00:01.130, CPU: 00:00:01.046, GC gen0: 53, gen1: 27, gen2: 2
+for i in [1..10000000] do () // Real: 00:00:01.288, CPU: 00:00:01.390, GC gen0: 53, gen1: 28, gen2: 2
 
-// The while and accumulation based functions seems to be pretty much instant, 
-// running the code 10.000.000 times, the majority of the time is spent on the loop itself
-// The continuation based version seems to be 10^8 times slower, which seems pretty extreme 
-// There might be a problem with the way I've defined it
+// Answer:
+//      The while and accumulation based functions seems to be pretty much instant, 
+//      running the code 10.000.000 times, the majority of the time is spent on the loop itself
+//      The continuation based version seems to be 10^7 times slower, which seems pretty extreme 
+//      There might be a problem with the way I've defined it
 
 
 // Exercise 4.7
@@ -152,22 +150,49 @@ countA 0 t4 // 5
 // Exercise 4.8
 // HR exercise 9.9
 
-let rec countAC t a c = 
-    match t with
-    | Leaf -> 1
-    | Node(l, _, r) -> countAC l a c + 1  + countAC r a c
+// ?????????
 
-countAC t3 0 id
+// let rec countAC t a c = 
+//     match t with
+//     | Leaf -> 1
+//     | Node(l, _, r) -> countAC l a (fun a -> a + 1)
+
+// countAC t3 0 id
 
 // Exercise 4.9
 // HR exercise 9.10
+// Consider the following list-generating function
+// let rec bigListK n k =
+//     if n=0 then k []
+//     else bigListK (n-1) (fun res -> 1::k(res));;
 
+// The call bigListK 130000 id causes a stack overflow. Analyze this problem.
+
+// Answer:
+//      Since 1::k(res), is not tail-recursive, it builds up a giant stack to calculate the result of k(res)
+//      because it's not possible to append 1 to the list before k(res) has been evaluated 
 
 // Exercise 4.10
 // HR exercise 9.11
+// Declare tail-recursive functions leftTree and rightTree. By use of leftTree it should
+// be possible to generate a big unbalanced tree to the left containing n + 1 values in the nodes so
+// that n is the value in the root, n − 1 is the value in the root of the left subtree, and so on. All
+// subtree to the right are leaves. Similarly, using rightTree it should be possible to generate a
+// big unbalanced tree to the right.
+
+// 1. Use these functions to show the stack limit when using count and countA from Exercise 9.8.
+
+// 2. Use these functions to test the performance of countC and countAC from Exercise 9.9.
+
 
 // Exercise 4.11
 // HR exercise 11.1
 
+let odd = Seq.initInfinite (fun x -> x * 2 + 1)
+Seq.item 5 odd // 11
+
 // Exercise 4.12
-// HR exercise 11.2**
+// HR exercise 11.2
+
+let factSeq = Seq.initInfinite fact
+Seq.item 5 factSeq
