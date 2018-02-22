@@ -1,6 +1,7 @@
 // Exercise 4.1
 (*9.1 Consider the function g declared on Page 202 and the stack and heap after the evaluation of g 2 shown in Figure 9.2.
-Reproduce this resulting stack and heap by a systematic application of push and pop operations on the stack, and heap  allocations that follow the step by step evaluation of g 2.*)
+Reproduce this resulting stack and heap by a systematic application of push and pop operations on the stack, 
+and heap allocations that follow the step by step evaluation of g 2.*)
 //          Stack       Heap
 
 
@@ -23,7 +24,7 @@ let rec sum' s (m, n) = if m < 0 || n < 0 then failwith "Invalid argument"
                         else sum' (s + m + n) (m, n - 1)
 let sum = sum' 0
 
-sum (1, 5) // 20
+sum (1, 300000) // 20
 
 // let sum2 (m, n) = m * n + (n * (n + 1)) / 2
 // sum2 (0, 99) // 4950
@@ -51,12 +52,11 @@ fact 16 // 2004189184
 
 let xs16 = List.init 1000000 (fun i -> 16)
 
-#time 
-
+#time
 for i in xs16 do fact i |> ignore // Real: 00:00:00.192, CPU: 00:00:00.187, GC gen0: 318, gen1: 0, gen2: 0
 
-// Slower than factA by a factor 10 taking into account the time for the loop 
-
+// On my machine fact with continuations is Slower than factA by a factor 10 taking into account the time for the loop
+// Compared to the book
 
 
 // Exercise 4.5
@@ -64,7 +64,6 @@ for i in xs16 do fact i |> ignore // Real: 00:00:00.192, CPU: 00:00:00.187, GC g
 // This to be used in the next task.
 // Declare a function for computing Fibonacci numbers F n (see Exercise 1.5) using a while
 // loop. Hint: introduce variables to contain the two previously computed Fibonacci numbers.
-
 let fib n = 
     if n = 0 then 0
     elif n = 1 then 1
@@ -80,9 +79,6 @@ let fib n =
         n1 + n2
 
 fib 15 // 610
-
-
-
 
 // Exercise 4.6
 // HR exercise 9.7
@@ -150,14 +146,13 @@ countA 0 t4 // 5
 // Exercise 4.8
 // HR exercise 9.9
 
-// ?????????
+let rec countAC t a c = 
+    match t with
+    | Leaf -> c(0)
+    | Node(l, _, r) -> countAC l a (fun a -> (a + 1) + (countAC r a c))
 
-// let rec countAC t a c = 
-//     match t with
-//     | Leaf -> 1
-//     | Node(l, _, r) -> countAC l a (fun a -> a + 1)
-
-// countAC t3 0 id
+countAC t3 0 id// 3
+countAC t4 0 id// 5
 
 // Exercise 4.9
 // HR exercise 9.10
@@ -172,6 +167,8 @@ countA 0 t4 // 5
 //      Since 1::k(res), is not tail-recursive, it builds up a giant stack to calculate the result of k(res)
 //      because it's not possible to append 1 to the list before k(res) has been evaluated 
 
+
+
 // Exercise 4.10
 // HR exercise 9.11
 // Declare tail-recursive functions leftTree and rightTree. By use of leftTree it should
@@ -180,19 +177,54 @@ countA 0 t4 // 5
 // subtree to the right are leaves. Similarly, using rightTree it should be possible to generate a
 // big unbalanced tree to the right.
 
+type BinTree<'a> = 
+    | Leaf
+    | Node of BinTree<'a> * 'a * BinTree<'a>
+
+let rec leftTree' c n t = if c = n then (Node(t, c, Leaf)) else leftTree' (c+1) n (Node(t, c, Leaf))  
+
+let leftTree n = leftTree' 0 n Leaf
+
+leftTree 3 // Node (Node (Node (Node (Leaf,0,Leaf),1,Leaf),2,Leaf),3,Leaf)
+
+let rec rightTree' c n t = if c = n then (Node(Leaf, c, t)) else rightTree' (c+1) n (Node(Leaf, c, t))  
+
+let rightTree n = rightTree' 0 n Leaf
+
+rightTree 3 // Node (Leaf,3,Node (Leaf,2,Node (Leaf,1,Node (Leaf,0,Leaf))))
+
 // 1. Use these functions to show the stack limit when using count and countA from Exercise 9.8.
+
+let t1 = leftTree 15000
+countA 0 t1 // 15001
+let t2 = leftTree 16000
+countA 0 t2 // StackOverFlow
+
+let t3 = leftTree 20000
+countAC t3 0 id // 20001
+let t4 = leftTree 21000
+countAC t3 0 id // StackOverflow
+
 
 // 2. Use these functions to test the performance of countC and countAC from Exercise 9.9.
 
+#time
+
+for i in [1..10000] do countA 0 t1      // Real: 00:00:02.547, CPU: 00:00:02.468, GC gen0: 0, gen1: 0, gen2: 0
+for i in [1..10000] do countAC t1 0 id  // Real: 00:00:03.200, CPU: 00:00:03.203, GC gen0: 1211, gen1: 376, gen2: 0
+for i in [1..10000] do ()               // Real: 00:00:00.000, CPU: 00:00:00.000, GC gen0: 0, gen1: 0, gen2: 0
+
+// The accumulator based version is about 25% faster than the continuation accumulator based version
+// But the continuation based version can work on larger trees ca. 20000 vs ca. 15000
+
+for i in [1..10]
 
 // Exercise 4.11
 // HR exercise 11.1
-
 let odd = Seq.initInfinite (fun x -> x * 2 + 1)
 Seq.item 5 odd // 11
 
 // Exercise 4.12
 // HR exercise 11.2
-
 let factSeq = Seq.initInfinite fact
 Seq.item 5 factSeq
