@@ -196,7 +196,6 @@ leftTree 3 // Node (Node (Node (Node (Leaf,0,Leaf),1,Leaf),2,Leaf),3,Leaf)
 let rec rightTree' c n t = 
     if c = n then (Node(Leaf, c, t)) 
     else rightTree' (c+1) n (Node(Leaf, c, t))  
-
 let rightTree n = rightTree' 0 n Leaf
 
 rightTree 3 // Node (Leaf,3,Node (Leaf,2,Node (Leaf,1,Node (Leaf,0,Leaf))))

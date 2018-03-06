@@ -357,8 +357,6 @@ eval expr1 // Some (["+"], 8)
 eval expr2 // None
 eval expr3 // Some (["+"; "*"; "-"], 20)
 
-
-
 type OptionTraceBuilder() = 
     member this.Bind (x, f) = 
         match x with
@@ -366,7 +364,7 @@ type OptionTraceBuilder() =
         | Some (trace1, v) -> 
             let (trace2, res) = f v
             Some (trace1 @ trace2, res)
-    member this.Return (x, f) = Some ([], x)           
+    member this.Return x = Some ([], x)           
     member this.ReturnFrom x = x
 
 let OptTraceB = OptionTraceBuilder()
@@ -380,13 +378,11 @@ let opEval op v1 v2 =
         if v2 = 0 then None 
         else Some (["/"], v1 / v2)
 
-let rec eval e =
+let rec eval e : string list * int option =
     match e with
     | CstI i -> OptTraceB { return i }
-    | Prim(op, e1, e2) ->
-        OptTraceB { let! v1 = eval e1
-                    let! v2 = eval e2
-                    return! opEval op v1 v2 }
+
+eval (CstI 5)
 
 eval expr1 // Some (["+"], 8)
 eval expr2 // None
