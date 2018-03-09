@@ -54,14 +54,6 @@ let renderSphere (radius : float)        // The radius of the sphere
     let u = Vector.normalise (Vector.crossProduct up w)  
     let v = Vector.crossProduct w u
 
-    printfn "up= %s" (string (Vector.getCoord up))
-    printfn "position= %s" (string (Point.getCoord position))
-    printfn "lookat= %s" (string (Point.getCoord lookat))
-    printfn "w(z)= %s" (string (Vector.getCoord w))
-    printfn "u(y)= %s" (string (Vector.getCoord u))
-    printfn "v(x)= %s" (string (Vector.getCoord v))
-
-
     let colorArray = Array2D.create resX resY Color.Black
 
     let hit x y = 
@@ -69,10 +61,9 @@ let renderSphere (radius : float)        // The radius of the sphere
         let py = pixelHeight * (float y - float resY/2.0 + 0.5)
         let direction = (px * u) + (py * v) - (zoom * w)
 
-        let (a, b, c) = polynomialVariables (Point.getCoord position) (Vector.getCoord direction) radius
-        if x = 0 && y = 0 then printfn "%s" (string (a,b,c))
+        let (a, b, c) = polynomialVariables (Vector.getCoord direction) (Point.getCoord position) radius
+        
         let d = discriminant a b c
-        if x = 0 && y = 0 then printfn "%f\n" d   
         if d < 0. then None
         else
             let (t1, t2) = solve a b d
@@ -86,11 +77,10 @@ let renderSphere (radius : float)        // The radius of the sphere
 
     let colorIfHit x y = function
         | None -> ()
-        | Some _ -> colorArray.[x,y] <- colour 
+        | Some _ -> colorArray.[x,((resY-1)-y)] <- colour 
 
     sendRays (fun x y -> hit x y |> colorIfHit x y) (resX, resY)
-    saveAsImage colorArray fileName
-    printfn ""
+    saveAsImage colorArray fileName    
         
 [<EntryPoint>]
 let main argv = 
@@ -98,15 +88,15 @@ let main argv =
     renderSphere 2.0 Color.Red (mkPoint 0.0 0.0 4.0) (mkPoint 0.0 0.0 0.0) (mkVector 0.0 1.0 0.0) 1.0 2.0 2.0 512 512 "output/front.png"
 
     // larger golden sphere, with the camera in front of it
-    // renderSphere 3.0 Color.Gold (mkPoint 0.0 0.0 4.0) (mkPoint 0.0 0.0 0.0) (mkVector 0.0 1.0 0.0) 1.0 2.0 2.0 512 512 "output/big.png"
+    renderSphere 3.0 Color.Gold (mkPoint 0.0 0.0 4.0) (mkPoint 0.0 0.0 0.0) (mkVector 0.0 1.0 0.0) 1.0 2.0 2.0 512 512 "output/big.png"
 
-    // // green sphere, with the camera in front of it
-    // renderSphere 2.0 Color.Green (mkPoint 0.0 0.0 4.0) (mkPoint 0.0 2.0 0.0) (mkVector 0.0 1.0 0.0) 1.0 2.0 2.0 512 512 "output/up.png"
+    // green sphere, with the camera in front of it
+    renderSphere 2.0 Color.Green (mkPoint 0.0 0.0 4.0) (mkPoint 0.0 2.0 0.0) (mkVector 0.0 1.0 0.0) 1.0 2.0 2.0 512 512 "output/up.png"
 
-    // // blue sphere, with the camera inside of it
-    // renderSphere 2.0 Color.Blue (mkPoint 0.0 0.0 0.0) (mkPoint 0.0 0.0 -4.0) (mkVector 0.0 1.0 0.0) 1.0 2.0 2.0 512 512 "output/inside.png"
+    // blue sphere, with the camera inside of it
+    renderSphere 2.0 Color.Blue (mkPoint 0.0 0.0 0.0) (mkPoint 0.0 0.0 -4.0) (mkVector 0.0 1.0 0.0) 1.0 2.0 2.0 512 512 "output/inside.png"
 
-    // // yellow sphere, with the camera behind it (pointing in the other direction)
-    // renderSphere 2.0 Color.Yellow (mkPoint 0.0 0.0 -4.0) (mkPoint 0.0 0.0 -8.0) (mkVector 0.0 1.0 0.0) 1.0 2.0 2.0 512 512 "output/behind.png"
+    // yellow sphere, with the camera behind it (pointing in the other direction)
+    renderSphere 2.0 Color.Yellow (mkPoint 0.0 0.0 -4.0) (mkPoint 0.0 0.0 -8.0) (mkVector 0.0 1.0 0.0) 1.0 2.0 2.0 512 512 "output/behind.png"
 
     0
