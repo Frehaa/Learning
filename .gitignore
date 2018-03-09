@@ -6,4 +6,4 @@
 .vs
 *\*.user
 LearningF#/*.dll
-LearningF#/*.exe
+*.exe
