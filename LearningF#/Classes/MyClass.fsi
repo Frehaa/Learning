@@ -3,4 +3,4 @@ module ClassModule2
 type MyClass = 
     inherit ClassModule.MyAbstract
     override Say : unit -> unit
-    new : unit -> MyClass
+    new : string -> MyClass
