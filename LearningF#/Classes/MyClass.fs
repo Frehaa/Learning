@@ -1,6 +1,6 @@
 module ClassModule2
 
 [<Class>]
-type MyClass()= 
+type MyClass(message)= 
     inherit ClassModule.MyAbstract()
-    override this.Say () = printfn "Hi!"
+    override this.Say () = printfn "%s" message
