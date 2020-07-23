@@ -1,7 +1,8 @@
-from torch import relu
+import numpy as np
+from torch import relu,device
 from torch.utils.data import DataLoader
 from torch.nn import Linear, MSELoss, Module
-from torch.optim import Adam
+from torch.optim import Adam, SGD
 
 import torchvision
 import matplotlib.pyplot as plt
@@ -27,47 +28,33 @@ test_loader = DataLoader(
 class AE(Module):
   def __init__(self):
     super().__init__()
-    self.e_hidden = Linear(in_features=784, out_features=128)
-    self.e_output = Linear(in_features=128, out_features=128)
-    self.d_hidden = Linear(in_features=128, out_features=128)
-    self.d_output = Linear(in_features=128, out_features=784)
+    self.e_hidden = Linear(in_features=784, out_features=16)
+    self.d_output = Linear(in_features=16, out_features=784)
     
   def forward(self, features):
     activation = self.e_hidden(features)
-    activation = relu(activation)
-    code = self.e_output(activation)
-    code = relu(code)
-    activation = self.d_hidden(code)
     activation = relu(activation)
     activation = self.d_output(activation)
     return relu(activation)
 
 model = AE()
 
-epochs = 20
-optimizer = Adam(model.parameters(), lr=1e-3)
+epochs = 10
+optimizer = Adam(model.parameters(), lr=5e-4)
 criterion = MSELoss()
 
 for epoch in range(epochs):
   loss = 0
   for batch_features, _ in train_loader:
 
-    shape = batch_features[0].shape
-    image = batch_features[0].view(shape[1], shape[2], shape[0])
-    plt.imshow(image)
-
     batch_features = batch_features.view(-1, 784)
-
-      
 
     optimizer.zero_grad()
 
     outputs = model(batch_features)
 
     train_loss = criterion(outputs, batch_features)
-
     train_loss.backward()
-
     optimizer.step()
 
     loss += train_loss.item()
@@ -76,3 +63,20 @@ for epoch in range(epochs):
   
   print("epoch : {}/{}, loss = {:.6f}".format(epoch+1, epochs, loss))
       
+for batch_features, _ in test_loader:
+    inputs = batch_features.view(-1, 784)
+    outputs = model(inputs).detach()
+
+    fig = plt.figure(figsize=(10,4))
+
+    for i in range(6):
+        image = batch_features[i].squeeze()
+        image2 = outputs[i].view(28, 28)
+        fig.add_subplot(2, 6, i + 1)
+        plt.imshow(image)
+        fig.add_subplot(2, 6, i + 7)
+        plt.imshow(image2)
+    plt.show()
+
+    if input().strip() != "n":
+        exit()
