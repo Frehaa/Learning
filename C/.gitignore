@@ -1,0 +1,9 @@
+.vs
+.vscode
+*.dll
+*.exp
+*.lib
+*.obj
+*.exe
+*.ilk
+*.pdb
